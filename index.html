@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeamUpdraft — Everything your WordPress site needs</title>
+<meta name="description" content="Manage every aspect of your WordPress site with a powerful all-in-one plugin suite — backup, speed, security and control.">
+<meta name="theme-color" content="#060509">
+
+<!-- inline SVG favicon (the updraft mark) — keeps the file fully self-contained -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2L28 26L16 20L4 26Z' fill='%23ff6a3d'/%3E%3C/svg%3E">
+
+<!-- link-preview cards for sharing -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="TeamUpdraft — Everything your WordPress site needs">
+<meta property="og:description" content="Manage every aspect of your WordPress site with a powerful all-in-one plugin suite — backup, speed, security and control.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TeamUpdraft — Everything your WordPress site needs">
+<meta name="twitter:description" content="Manage every aspect of your WordPress site with a powerful all-in-one plugin suite — backup, speed, security and control.">
+
+<!-- Display + body type. Degrades gracefully to system fonts if offline. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   TEAMUPDRAFT — "THE UPDRAFT"  •  concept prototype
+   Design principles:
+   1. One light source, rising. All motion travels upward.
+   2. Dark cinematic canvas so motion + product pop.
+   3. Oversized, confident type. Generous whitespace.
+   4. Restraint in colour, richness in motion.
+   5. Every section earns its entrance.
+   ============================================================ */
+
+:root{
+  --bg:        #060509;
+  --bg-2:      #0a0912;
+  --bg-3:      #0e0c17;
+  --surface:   rgba(255,255,255,.025);
+  --surface-2: rgba(255,255,255,.05);
+  --border:    rgba(255,255,255,.08);
+  --border-2:  rgba(255,255,255,.14);
+
+  --text:      #f6f3ef;
+  --dim:       #a6a09a;
+  --faint:     #837d75;  /* lifted from #6c665f for AA contrast on small labels */
+
+  /* the updraft: warm at the base, cooling to violet as it rises */
+  --warm:      #ff6a3d;
+  --warm-2:    #ff9a52;
+  --pink:      #ff4d6d;
+  --violet:    #a24bff;
+
+  /* per-product hues — uniform treatment keeps them cohesive */
+  --c-udp:     #ff6a3d;  /* UpdraftPlus  — backup */
+  --c-wpo:     #ffc24b;  /* WP-Optimize  — speed  */
+  --c-aios:    #45b8ff;  /* All-In-One Security */
+  --c-uc:      #b76bff;  /* UpdraftCentral */
+  --c-burst:   #45e0a0;  /* Burst Statistics */
+
+  --maxw: 1240px;
+  --ease: cubic-bezier(.2,.7,.2,1);
+  --font-display: "Space Grotesk", "SF Pro Display", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.55;
+  overflow-x:hidden;
+  font-weight:450;
+}
+a{ color:inherit; text-decoration:none; }
+img,svg{ display:block; }
+::selection{ background:var(--warm); color:#1a0d06; }
+
+/* ---------- accessibility: skip link + keyboard focus ---------- */
+.skip{ position:absolute; left:-999px; top:10px; z-index:300; padding:12px 18px; border-radius:10px;
+  background:var(--warm); color:#1a0d06; font-weight:600; }
+.skip:focus{ left:16px; }
+:focus-visible{ outline:2px solid var(--warm-2); outline-offset:3px; border-radius:6px; }
+.btn:focus-visible{ outline-offset:4px; }
+
+/* ---------- scroll progress ---------- */
+#progress{
+  position:fixed; top:0; left:0; height:2px; width:0;
+  background:linear-gradient(90deg,var(--warm),var(--pink),var(--violet));
+  z-index:200; box-shadow:0 0 12px rgba(255,106,61,.7);
+}
+
+/* ---------- nav ---------- */
+nav{
+  position:fixed; top:0; left:0; right:0; z-index:120;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:22px clamp(20px,5vw,56px);
+  transition:padding .4s var(--ease), background .4s var(--ease), border-color .4s var(--ease);
+  border-bottom:1px solid transparent;
+}
+nav.scrolled{
+  padding:14px clamp(20px,5vw,56px);
+  background:rgba(8,7,12,.72);
+  backdrop-filter:blur(18px) saturate(140%);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);
+  border-bottom:1px solid var(--border);
+}
+.brand{ display:flex; align-items:center; gap:11px; font-family:var(--font-display); font-weight:700; font-size:19px; letter-spacing:-.02em; }
+.brand .mark{ width:26px; height:26px; position:relative; }
+.brand .mark svg{ width:100%; height:100%; }
+.brand b{ font-weight:700; }
+.brand span{ color:var(--dim); font-weight:500; }
+
+.nav-links{ display:flex; gap:6px; align-items:center; }
+.nav-links a{
+  font-size:14.5px; color:var(--dim); padding:8px 14px; border-radius:10px;
+  font-weight:500; transition:color .25s, background .25s; position:relative;
+}
+.nav-links a:hover{ color:var(--text); background:var(--surface-2); }
+
+.nav-right{ display:flex; gap:14px; align-items:center; }
+.nav-right .ghost{ font-size:14.5px; color:var(--dim); font-weight:500; transition:color .25s; }
+.nav-right .ghost:hover{ color:var(--text); }
+.btn{
+  font-family:var(--font-body); font-weight:600; font-size:14.5px;
+  padding:11px 20px; border-radius:12px; border:0; cursor:pointer;
+  display:inline-flex; align-items:center; gap:8px; position:relative; isolation:isolate;
+  transition:transform .25s var(--ease), box-shadow .35s var(--ease);
+}
+.btn-primary{
+  color:#1c0e06; background:linear-gradient(135deg,#ffb05a,var(--warm));
+  box-shadow:0 8px 30px -8px rgba(255,106,61,.6), inset 0 1px 0 rgba(255,255,255,.35);
+}
+.btn-primary:hover{ transform:translateY(-2px); box-shadow:0 14px 40px -8px rgba(255,106,61,.75), inset 0 1px 0 rgba(255,255,255,.4); }
+.btn-ghost{
+  color:var(--text); background:var(--surface-2); border:1px solid var(--border-2);
+  backdrop-filter:blur(8px);
+}
+.btn-ghost:hover{ transform:translateY(-2px); border-color:rgba(255,255,255,.3); background:rgba(255,255,255,.08); }
+.btn .arr{ transition:transform .3s var(--ease); }
+.btn:hover .arr{ transform:translateX(4px); }
+
+.nav-burger{ display:none; flex-direction:column; gap:5px; cursor:pointer; padding:8px; background:none; border:0; }
+.nav-burger span{ width:22px; height:2px; background:var(--text); border-radius:2px; transition:.3s; }
+
+/* ---------- shared layout ---------- */
+.wrap{ max-width:var(--maxw); margin:0 auto; padding:0 clamp(20px,5vw,40px); }
+section{ position:relative; }
+.eyebrow{
+  display:inline-flex; align-items:center; gap:9px;
+  font-size:12.5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--warm-2); margin-bottom:22px;
+}
+.eyebrow::before{ content:""; width:26px; height:1px; background:linear-gradient(90deg,var(--warm),transparent); }
+h2.big{
+  font-family:var(--font-display); font-weight:600;
+  font-size:clamp(34px,5.2vw,64px); line-height:1.02; letter-spacing:-.03em;
+}
+.lead{ color:var(--dim); font-size:clamp(16px,1.5vw,19px); max-width:62ch; line-height:1.65; }
+
+/* ---------- reveal-on-scroll ---------- */
+.reveal{ opacity:0; transform:translateY(34px); transition:opacity .9s var(--ease), transform .9s var(--ease); transition-delay:var(--d,0s); }
+.reveal.in{ opacity:1; transform:none; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{ min-height:100svh; position:relative; display:flex; align-items:center; overflow:hidden; }
+#updraft{ position:absolute; inset:0; width:100%; height:100%; z-index:0; }
+.hero-glow{
+  position:absolute; left:50%; bottom:-25%; transform:translateX(-50%);
+  width:120vw; height:90vh; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(60% 70% at 50% 100%, rgba(255,106,61,.42), transparent 70%),
+    radial-gradient(40% 55% at 50% 95%, rgba(255,77,109,.3), transparent 70%),
+    radial-gradient(70% 80% at 50% 120%, rgba(162,75,255,.22), transparent 70%);
+  filter:blur(6px); animation:breathe 9s ease-in-out infinite;
+}
+@keyframes breathe{ 0%,100%{ opacity:.85; transform:translateX(-50%) scale(1);} 50%{ opacity:1; transform:translateX(-50%) scale(1.06);} }
+.hero-vignette{ position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:radial-gradient(120% 80% at 50% 40%, transparent 55%, rgba(6,5,9,.85) 100%); }
+#spotlight{ position:absolute; inset:0; z-index:1; pointer-events:none; opacity:0; transition:opacity .5s;
+  background:radial-gradient(280px circle at var(--mx,50%) var(--my,50%), rgba(255,154,82,.12), transparent 65%); }
+
+.hero-inner{ position:relative; z-index:3; width:100%; max-width:var(--maxw); margin:0 auto; padding:0 clamp(20px,5vw,40px); }
+.hero h1{
+  font-family:var(--font-display); font-weight:600;
+  font-size:clamp(44px,8vw,104px); line-height:.98; letter-spacing:-.04em;
+  max-width:16ch; margin-bottom:26px;
+}
+.hero h1 .word{ display:inline-block; overflow:hidden; vertical-align:top; }
+.hero h1 .word i{ display:inline-block; font-style:normal; transform:translateY(110%); transition:transform 1s var(--ease); transition-delay:var(--wd,0s); }
+.hero.lit h1 .word i{ transform:translateY(0); }
+.hero h1 em{ font-style:normal; }
+/* gradient must sit on the text-bearing node itself (the split-word <i>),
+   not an ancestor — background-clip:text won't clip to descendant glyphs */
+.hero h1 em i, .hero h1 em{
+  background:linear-gradient(120deg,#ffd9a0 0%, var(--warm) 40%, var(--pink) 70%, var(--violet) 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.hero-sub{ color:var(--dim); font-size:clamp(16px,1.7vw,20px); max-width:54ch; line-height:1.65; margin-bottom:36px;
+  opacity:0; transform:translateY(20px); transition:.9s var(--ease) .55s; }
+.hero.lit .hero-sub{ opacity:1; transform:none; }
+.hero-cta{ display:flex; gap:14px; flex-wrap:wrap; align-items:center;
+  opacity:0; transform:translateY(20px); transition:.9s var(--ease) .7s; }
+.hero.lit .hero-cta{ opacity:1; transform:none; }
+.play{ display:inline-flex; align-items:center; gap:12px; cursor:pointer; color:var(--text); font-weight:500; font-size:15px; }
+.play .circ{ width:44px; height:44px; border-radius:50%; border:1px solid var(--border-2); display:grid; place-items:center; transition:.3s; background:var(--surface); }
+.play:hover .circ{ border-color:var(--warm); background:rgba(255,106,61,.12); transform:scale(1.06); }
+
+.hero-stats{ display:flex; gap:clamp(24px,4vw,56px); margin-top:64px; flex-wrap:wrap;
+  opacity:0; transform:translateY(20px); transition:.9s var(--ease) .9s; }
+.hero.lit .hero-stats{ opacity:1; transform:none; }
+.hstat .n{ font-family:var(--font-display); font-weight:600; font-size:clamp(26px,3vw,38px); letter-spacing:-.02em; line-height:1; }
+.hstat .n .u{ background:linear-gradient(120deg,var(--warm),var(--pink)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.hstat .l{ color:var(--faint); font-size:13px; margin-top:7px; letter-spacing:.02em; }
+
+.scroll-hint{ position:absolute; bottom:30px; left:50%; transform:translateX(-50%); z-index:3;
+  display:flex; flex-direction:column; align-items:center; gap:9px; color:var(--faint); font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+  opacity:0; transition:1s 1.4s; }
+.hero.lit .scroll-hint{ opacity:1; }
+.scroll-hint .mouse{ width:22px; height:34px; border:1px solid var(--border-2); border-radius:12px; position:relative; }
+.scroll-hint .mouse::after{ content:""; position:absolute; top:6px; left:50%; transform:translateX(-50%); width:3px; height:7px; border-radius:2px; background:var(--warm-2); animation:scrolldot 1.8s var(--ease) infinite; }
+@keyframes scrolldot{ 0%{ opacity:0; top:6px;} 30%{ opacity:1;} 70%{ opacity:1; top:16px;} 100%{ opacity:0; top:16px;} }
+
+/* ============================================================
+   MARQUEE
+   ============================================================ */
+.marquee-wrap{ border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:30px 0; background:var(--bg-2); position:relative; }
+.marquee-label{ text-align:center; color:var(--faint); font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; margin-bottom:22px; }
+.marquee{ display:flex; gap:0; overflow:hidden; mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent); -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent); }
+.marquee .track{ display:flex; gap:18px; padding-right:18px; animation:scrollx 32s linear infinite; white-space:nowrap; }
+.marquee:hover .track{ animation-play-state:paused; }
+@keyframes scrollx{ to{ transform:translateX(-50%); } }
+.chip{ display:inline-flex; align-items:center; gap:10px; padding:11px 20px; border:1px solid var(--border); border-radius:100px; color:var(--dim); font-size:14.5px; font-weight:500; background:var(--surface); }
+.chip .dot{ width:7px; height:7px; border-radius:50%; background:var(--warm); box-shadow:0 0 10px var(--warm); }
+
+/* ============================================================
+   AUDIENCE SEGMENTS
+   ============================================================ */
+.seg-section{ padding:clamp(90px,12vw,160px) 0; }
+.seg{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(30px,5vw,80px); align-items:center; padding:clamp(40px,6vw,70px) 0; }
+.seg:nth-child(even) .seg-visual{ order:-1; }
+.seg-num{ font-family:var(--font-display); font-size:14px; color:var(--warm-2); font-weight:600; letter-spacing:.1em; margin-bottom:20px; }
+.seg h3{ font-family:var(--font-display); font-weight:600; font-size:clamp(28px,3.6vw,46px); line-height:1.05; letter-spacing:-.03em; margin-bottom:20px; }
+.seg p{ color:var(--dim); font-size:17px; line-height:1.7; max-width:46ch; }
+.seg .mini-link{ display:inline-flex; align-items:center; gap:8px; margin-top:26px; color:var(--text); font-weight:500; border-bottom:1px solid var(--border-2); padding-bottom:3px; transition:.3s; }
+.seg .mini-link:hover{ color:var(--warm); border-color:var(--warm); gap:12px; }
+
+.seg-visual{ aspect-ratio:1/.82; border-radius:24px; border:1px solid var(--border); position:relative; overflow:hidden;
+  background:linear-gradient(160deg,var(--bg-3),var(--bg-2)); }
+.seg-visual .glow{ position:absolute; inset:0; opacity:.6; }
+
+/* world of sites — drifting dot field */
+.dotfield{ position:absolute; inset:0; }
+.dotfield i{ position:absolute; width:6px; height:6px; border-radius:50%; background:var(--warm); box-shadow:0 0 14px var(--warm); animation:float-dot 6s ease-in-out infinite; }
+@keyframes float-dot{ 0%,100%{ transform:translateY(0); opacity:.55;} 50%{ transform:translateY(-12px); opacity:1;} }
+
+/* agency stack — overlapping site cards */
+.stack{ position:absolute; inset:0; display:grid; place-items:center; }
+.stack .card-mini{ position:absolute; width:60%; height:42%; border-radius:14px; border:1px solid var(--border-2); background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.02)); backdrop-filter:blur(4px); box-shadow:0 20px 50px -20px rgba(0,0,0,.7); }
+.stack .card-mini::before{ content:""; position:absolute; top:14px; left:14px; width:30%; height:7px; border-radius:4px; background:var(--c-uc); opacity:.8; }
+.stack .card-mini::after{ content:""; position:absolute; top:30px; left:14px; right:14px; bottom:14px; border-radius:8px; background:repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 7px,transparent 7px 16px); }
+.stack .c1{ transform:translate(-44px,-30px) rotate(-7deg); }
+.stack .c2{ transform:translate(0,0) rotate(2deg); z-index:2; }
+.stack .c3{ transform:translate(46px,34px) rotate(8deg); }
+
+/* team — concentric rings */
+.rings{ position:absolute; inset:0; display:grid; place-items:center; }
+.rings i{ position:absolute; border:1px solid var(--border-2); border-radius:50%; }
+.rings i:nth-child(1){ width:30%; height:30%; }
+.rings i:nth-child(2){ width:55%; height:55%; border-color:rgba(255,106,61,.25); }
+.rings i:nth-child(3){ width:80%; height:80%; border-color:rgba(162,75,255,.18); }
+.rings .pulse{ width:60px; height:60px; border-radius:50%; background:radial-gradient(circle,var(--warm),transparent 70%); animation:pulse 3s ease-in-out infinite; }
+@keyframes pulse{ 0%,100%{ transform:scale(.9); opacity:.7;} 50%{ transform:scale(1.15); opacity:1;} }
+.rings .sat{ position:absolute; width:12px; height:12px; border-radius:50%; background:var(--text); box-shadow:0 0 12px var(--warm-2); }
+
+/* ============================================================
+   PRODUCT SUITE — bento
+   ============================================================ */
+.suite{ padding:clamp(60px,8vw,90px) 0 clamp(90px,12vw,150px); }
+.suite-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:30px; flex-wrap:wrap; margin-bottom:54px; }
+.bento{ display:grid; grid-template-columns:repeat(12,1fr); gap:18px; }
+.pcard{
+  position:relative; border-radius:22px; border:1px solid var(--border); overflow:hidden;
+  background:linear-gradient(165deg,var(--bg-3),var(--bg-2));
+  padding:30px; min-height:280px; display:flex; flex-direction:column; justify-content:space-between;
+  transition:transform .5s var(--ease), border-color .5s var(--ease), box-shadow .5s var(--ease);
+  transform-style:preserve-3d; cursor:pointer;
+}
+.pcard:hover{ border-color:var(--border-2); box-shadow:0 30px 70px -30px rgba(0,0,0,.8); }
+.pcard .sheen{ position:absolute; inset:0; opacity:0; transition:opacity .5s; pointer-events:none;
+  background:radial-gradient(420px circle at var(--px,50%) var(--py,50%), color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%); }
+.pcard:hover .sheen{ opacity:1; }
+.pcard .topglow{ position:absolute; left:0; top:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--accent),transparent); opacity:.6; }
+.pcard .icon{ width:48px; height:48px; border-radius:13px; display:grid; place-items:center; border:1px solid var(--border-2);
+  background:color-mix(in srgb, var(--accent) 12%, var(--surface)); color:var(--accent); margin-bottom:auto; }
+.pcard .icon svg{ width:24px; height:24px; }
+.pcard .ptag{ font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:10px; }
+.pcard h3{ font-family:var(--font-display); font-weight:600; font-size:clamp(22px,2.4vw,30px); letter-spacing:-.02em; margin-bottom:9px; }
+.pcard p{ color:var(--dim); font-size:15px; line-height:1.6; max-width:40ch; }
+.pcard .go{ margin-top:22px; display:inline-flex; align-items:center; gap:8px; font-weight:500; font-size:14.5px; color:var(--text); transition:gap .3s; }
+.pcard:hover .go{ gap:13px; color:var(--accent); }
+.pcard.span7{ grid-column:span 7; }
+.pcard.span5{ grid-column:span 5; }
+.pcard.span4{ grid-column:span 4; }
+.pcard.tall{ min-height:360px; }
+
+/* living visuals inside cards */
+.viz{ position:absolute; pointer-events:none; }
+/* UpdraftPlus — rising backup ring */
+.viz-ring{ right:30px; top:30px; width:120px; height:120px; }
+.viz-ring svg{ width:100%; height:100%; transform:rotate(-90deg); }
+.viz-ring .bgc{ fill:none; stroke:var(--border); stroke-width:6; }
+.viz-ring .fgc{ fill:none; stroke:var(--c-udp); stroke-width:6; stroke-linecap:round; stroke-dasharray:327; stroke-dashoffset:327; filter:drop-shadow(0 0 6px var(--c-udp)); }
+.pcard.in .viz-ring .fgc{ animation:ringfill 2.4s var(--ease) forwards .3s; }
+@keyframes ringfill{ to{ stroke-dashoffset:33; } }
+.viz-ring .pct{ position:absolute; inset:0; display:grid; place-items:center; font-family:var(--font-display); font-weight:600; font-size:22px; }
+.cloudchips{ display:flex; gap:8px; margin-top:18px; flex-wrap:wrap; }
+.cloudchips span{ font-size:12px; color:var(--dim); padding:6px 11px; border:1px solid var(--border); border-radius:8px; background:var(--surface); }
+
+/* WP-Optimize — speed gauge */
+.viz-gauge{ right:26px; top:26px; width:110px; height:70px; }
+.viz-gauge svg{ width:100%; height:100%; }
+.viz-gauge .needle{ transform-origin:55px 60px; transform:rotate(-78deg); animation:sweep 3.2s var(--ease) infinite; }
+@keyframes sweep{ 0%,100%{ transform:rotate(-78deg);} 50%{ transform:rotate(72deg);} }
+
+/* AIOS — shield pulse */
+.viz-shield{ right:30px; top:28px; width:96px; height:110px; }
+.viz-shield .ring{ animation:shieldpulse 2.6s ease-in-out infinite; transform-origin:center; }
+@keyframes shieldpulse{ 0%,100%{ opacity:.3; transform:scale(.85);} 50%{ opacity:1; transform:scale(1.05);} }
+
+/* UpdraftCentral — site grid scan */
+.viz-grid{ right:26px; top:28px; display:grid; grid-template-columns:repeat(4,1fr); gap:7px; }
+.viz-grid i{ width:15px; height:15px; border-radius:5px; background:var(--surface-2); border:1px solid var(--border); }
+.viz-grid i.on{ background:var(--c-uc); box-shadow:0 0 10px var(--c-uc); animation:scan 3s ease-in-out infinite; }
+.viz-grid i:nth-child(3n).on{ animation-delay:.4s; }
+.viz-grid i:nth-child(2n).on{ animation-delay:.8s; }
+@keyframes scan{ 0%,100%{ opacity:.35;} 50%{ opacity:1;} }
+
+/* Burst — bars */
+.viz-bars{ right:30px; bottom:30px; display:flex; align-items:flex-end; gap:7px; height:64px; }
+.viz-bars i{ width:11px; border-radius:4px 4px 0 0; background:linear-gradient(var(--c-burst),rgba(69,224,160,.3)); height:20%; transition:height 1.2s var(--ease); }
+.pcard.in .viz-bars i{ height:var(--h); }
+
+/* ============================================================
+   STATS BAND
+   ============================================================ */
+.stats-band{ padding:clamp(70px,9vw,120px) 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+  background:radial-gradient(80% 120% at 50% 0%, rgba(255,106,61,.06), transparent 60%), var(--bg-2); }
+.stats-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:30px; }
+.bigstat{ text-align:center; }
+.bigstat .n{ font-family:var(--font-display); font-weight:600; font-size:clamp(38px,5.5vw,68px); letter-spacing:-.03em; line-height:1;
+  background:linear-gradient(180deg,#fff,#bdb6ad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.bigstat .n .accent{ background:linear-gradient(120deg,var(--warm),var(--pink)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.bigstat .l{ color:var(--dim); font-size:15px; margin-top:14px; }
+
+/* ============================================================
+   SUPPORT PULL-QUOTE
+   ============================================================ */
+.quote{ padding:clamp(110px,16vw,200px) 0; text-align:center; position:relative; overflow:hidden; }
+.quote .qglow{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:80vw; height:60vh; z-index:0;
+  background:radial-gradient(circle,rgba(162,75,255,.14),transparent 65%); filter:blur(20px); }
+.quote blockquote{ position:relative; z-index:1; font-family:var(--font-display); font-weight:500;
+  font-size:clamp(26px,4.4vw,56px); line-height:1.18; letter-spacing:-.025em; max-width:18ch; margin:0 auto; }
+.quote blockquote .hl{ background:linear-gradient(120deg,var(--warm),var(--pink),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.quote .qmeta{ position:relative; z-index:1; margin-top:36px; color:var(--faint); font-size:14px; letter-spacing:.04em; }
+
+/* ============================================================
+   CLOSING CTA
+   ============================================================ */
+.cta{ padding:clamp(40px,6vw,60px) clamp(20px,5vw,40px) clamp(110px,14vw,160px); }
+.cta-box{ max-width:var(--maxw); margin:0 auto; border-radius:32px; border:1px solid var(--border-2); overflow:hidden; position:relative;
+  padding:clamp(50px,8vw,100px) clamp(30px,6vw,80px); text-align:center;
+  background:linear-gradient(165deg,var(--bg-3),#0b0710); }
+.cta-box .ctaglow{ position:absolute; left:50%; bottom:-40%; transform:translateX(-50%); width:90%; height:100%; z-index:0;
+  background:radial-gradient(60% 80% at 50% 100%, rgba(255,106,61,.35),rgba(255,77,109,.18) 45%, transparent 72%); animation:breathe 8s ease-in-out infinite; }
+.cta-box > *{ position:relative; z-index:1; }
+.cta-box h2{ font-family:var(--font-display); font-weight:600; font-size:clamp(32px,5.4vw,68px); line-height:1.02; letter-spacing:-.035em; max-width:16ch; margin:0 auto 22px; }
+.cta-box p{ color:var(--dim); font-size:18px; max-width:50ch; margin:0 auto 38px; }
+.cta-box .row{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{ border-top:1px solid var(--border); background:var(--bg-2); padding:clamp(60px,8vw,90px) clamp(20px,5vw,40px) 50px; }
+.foot{ max-width:var(--maxw); margin:0 auto; }
+.foot-top{ display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr 1fr; gap:40px; padding-bottom:56px; border-bottom:1px solid var(--border); }
+.foot-brand .brand{ margin-bottom:18px; }
+.foot-brand p{ color:var(--faint); font-size:14px; max-width:30ch; line-height:1.6; }
+.foot-col h4{ font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); margin-bottom:18px; font-weight:600; }
+.foot-col a{ display:block; color:var(--faint); font-size:14.5px; padding:6px 0; transition:color .25s, padding-left .25s; }
+.foot-col a:hover{ color:var(--text); padding-left:5px; }
+.foot-bottom{ display:flex; justify-content:space-between; align-items:center; padding-top:30px; gap:20px; flex-wrap:wrap; }
+.foot-bottom p{ color:var(--faint); font-size:13px; }
+.foot-social{ display:flex; gap:10px; }
+.foot-social a{ width:38px; height:38px; border:1px solid var(--border); border-radius:10px; display:grid; place-items:center; color:var(--dim); transition:.3s; }
+.foot-social a:hover{ color:var(--text); border-color:var(--border-2); background:var(--surface); transform:translateY(-2px); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:980px){
+  .nav-links, .nav-right .ghost, .nav-right .btn{ display:none; } /* hero CTA covers conversion on mobile */
+  .nav-burger{ display:flex; }
+  .bento{ grid-template-columns:repeat(6,1fr); }
+  .pcard.span7,.pcard.span5,.pcard.span4{ grid-column:span 6; }
+  .seg{ grid-template-columns:1fr; gap:30px; }
+  .seg:nth-child(even) .seg-visual{ order:0; }
+  .stats-grid{ grid-template-columns:repeat(2,1fr); gap:40px 20px; }
+  .foot-top{ grid-template-columns:1fr 1fr; gap:36px; }
+  .foot-brand{ grid-column:span 2; }
+}
+@media (max-width:520px){
+  .hero-stats{ gap:24px; }
+  .stats-grid{ grid-template-columns:1fr 1fr; }
+  .foot-top{ grid-template-columns:1fr; }
+  .foot-brand{ grid-column:span 1; }
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{ animation:none !important; transition:none !important; }
+  .reveal{ opacity:1; transform:none; }
+  .hero h1 .word i{ transform:none; }
+  .hero-sub,.hero-cta,.hero-stats,.scroll-hint{ opacity:1; transform:none; }
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- ===================== NAV ===================== -->
+<nav id="nav">
+  <a class="brand" href="#top">
+    <span class="mark">
+      <svg viewBox="0 0 32 32" fill="none">
+        <defs><linearGradient id="lg" x1="0" y1="32" x2="0" y2="0">
+          <stop offset="0" stop-color="#ff6a3d"/><stop offset=".55" stop-color="#ff4d6d"/><stop offset="1" stop-color="#a24bff"/>
+        </linearGradient></defs>
+        <path d="M16 2 L28 26 L16 20 L4 26 Z" fill="url(#lg)"/>
+      </svg>
+    </span>
+    <span><b>Team</b>Updraft</span>
+  </a>
+  <div class="nav-links" id="navlinks">
+    <a href="#suite">Plugins</a>
+    <a href="#segments">Solutions</a>
+    <a href="#support">Support</a>
+    <a href="#segments">About</a>
+    <a href="#suite">Blog</a>
+  </div>
+  <div class="nav-right">
+    <a class="ghost" href="#">Account</a>
+    <a class="btn btn-primary" href="#suite">Get the suite <span class="arr">→</span></a>
+    <button class="nav-burger" id="burger" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="navlinks"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<main id="main">
+
+<!-- ===================== HERO ===================== -->
+<header class="hero" id="top">
+  <canvas id="updraft" aria-hidden="true"></canvas>
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="hero-vignette" aria-hidden="true"></div>
+  <div id="spotlight" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <div class="eyebrow">WordPress, elevated</div>
+    <h1 id="headline">
+      Everything your <em>WordPress&nbsp;site</em> needs
+    </h1>
+    <p class="hero-sub">Manage every aspect of your WordPress site with a powerful all-in-one plugin suite. Whether you're an agency or an individual, take control with ease, speed and peace of mind.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#suite">Explore the suite <span class="arr">→</span></a>
+      <div class="play" id="playStory" role="button" tabindex="0" aria-label="Watch the story">
+        <span class="circ" aria-hidden="true">
+          <svg width="13" height="14" viewBox="0 0 13 14" fill="none"><path d="M1 1.3 L12 7 L1 12.7 Z" fill="#fff"/></svg>
+        </span>
+        Watch the story
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hstat"><div class="n"><span class="u" data-count="5" data-suffix="M+">0</span></div><div class="l">WordPress installs</div></div>
+      <div class="hstat"><div class="n">5.0<span class="u">★</span></div><div class="l">Average rating</div></div>
+      <div class="hstat"><div class="n"><span data-count="15">0</span></div><div class="l">Years of craft</div></div>
+      <div class="hstat"><div class="n">Top <span class="u" data-count="1" data-suffix="%">0</span></div><div class="l">Developer talent</div></div>
+    </div>
+  </div>
+
+  <div class="scroll-hint"><div class="mouse"></div>Scroll</div>
+</header>
+
+<!-- ===================== MARQUEE ===================== -->
+<div class="marquee-wrap">
+  <div class="marquee-label">Back up &amp; restore anywhere — to the storage you already trust</div>
+  <div class="marquee">
+    <div class="track" id="track">
+      <span class="chip"><i class="dot"></i>Dropbox</span>
+      <span class="chip"><i class="dot"></i>Google Drive</span>
+      <span class="chip"><i class="dot"></i>Amazon S3</span>
+      <span class="chip"><i class="dot"></i>Microsoft OneDrive</span>
+      <span class="chip"><i class="dot"></i>Backblaze B2</span>
+      <span class="chip"><i class="dot"></i>Google Cloud</span>
+      <span class="chip"><i class="dot"></i>Rackspace</span>
+      <span class="chip"><i class="dot"></i>DreamObjects</span>
+      <span class="chip"><i class="dot"></i>OpenStack Swift</span>
+      <span class="chip"><i class="dot"></i>SFTP / FTP</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SEGMENTS ===================== -->
+<section class="seg-section" id="segments">
+  <div class="wrap">
+
+    <div class="seg reveal">
+      <div class="seg-copy">
+        <div class="seg-num">01 — Website owners</div>
+        <h3>We're for WordPress website&nbsp;owners</h3>
+        <p>Improve your online presence with plugins that are already installed on more than 5 million WordPress websites worldwide. Ease, speed and peace of mind, in one suite.</p>
+        <a class="mini-link" href="#suite">See what you get <span>→</span></a>
+      </div>
+      <div class="seg-visual">
+        <div class="glow" style="background:radial-gradient(60% 70% at 30% 80%,rgba(255,106,61,.3),transparent 70%)"></div>
+        <div class="dotfield" id="dotfield"></div>
+      </div>
+    </div>
+
+    <div class="seg reveal">
+      <div class="seg-copy">
+        <div class="seg-num">02 — Agencies &amp; freelancers</div>
+        <h3>We're for WordPress agencies and&nbsp;freelancers</h3>
+        <p>Maintain every client site on a rock-solid plugin ecosystem. Back up, optimise, secure and manage them all — without the busywork.</p>
+        <a class="mini-link" href="#suite">Built for scale <span>→</span></a>
+      </div>
+      <div class="seg-visual">
+        <div class="glow" style="background:radial-gradient(60% 70% at 70% 30%,rgba(183,107,255,.28),transparent 70%)"></div>
+        <div class="stack"><div class="card-mini c1"></div><div class="card-mini c3"></div><div class="card-mini c2"></div></div>
+      </div>
+    </div>
+
+    <div class="seg reveal">
+      <div class="seg-copy">
+        <div class="seg-num">03 — The people behind it</div>
+        <h3>We're TeamUpdraft</h3>
+        <p>Almost 15 years building WordPress tooling, by a team drawn from the top 1% of developer talent. Our support engineers are plugin developers — and even our lead developers answer support tickets.</p>
+        <a class="mini-link" href="#support">Meet the team <span>→</span></a>
+      </div>
+      <div class="seg-visual">
+        <div class="glow" style="background:radial-gradient(60% 70% at 50% 50%,rgba(255,154,82,.25),transparent 70%)"></div>
+        <div class="rings"><i></i><i></i><i></i><div class="pulse"></div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== SUITE ===================== -->
+<section class="suite" id="suite">
+  <div class="wrap">
+    <div class="suite-head">
+      <div class="reveal">
+        <div class="eyebrow">The suite</div>
+        <h2 class="big">One suite.<br>Every part of your&nbsp;site.</h2>
+      </div>
+      <p class="lead reveal" style="--d:.1s">Five focused plugins that do one thing brilliantly — and work even better together.</p>
+    </div>
+
+    <div class="bento">
+
+      <!-- UpdraftPlus -->
+      <article class="pcard span7 tall reveal" style="--accent:var(--c-udp)">
+        <div class="topglow"></div><div class="sheen"></div>
+        <div class="viz viz-ring">
+          <svg viewBox="0 0 120 120"><circle class="bgc" cx="60" cy="60" r="52"/><circle class="fgc" cx="60" cy="60" r="52"/></svg>
+          <div class="pct">90%</div>
+        </div>
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1 0-8 5 5 0 0 1 9.6-1.5A3.5 3.5 0 0 1 17 18H7Z"/><path d="M12 21v-7m0 0-2.2 2.2M12 14l2.2 2.2"/></svg>
+        </div>
+        <div>
+          <div class="ptag">UpdraftPlus</div>
+          <h3>Back up, restore and migrate your WordPress&nbsp;website</h3>
+          <p>The world's most trusted WordPress backup plugin. Schedule automatic backups to the cloud, restore in a click, and migrate or clone your site with ease.</p>
+          <div class="cloudchips"><span>Automatic schedules</span><span>One-click restore</span><span>Site migration</span></div>
+          <span class="go">Explore UpdraftPlus →</span>
+        </div>
+      </article>
+
+      <!-- WP-Optimize -->
+      <article class="pcard span5 tall reveal" style="--accent:var(--c-wpo); --d:.08s">
+        <div class="topglow"></div><div class="sheen"></div>
+        <div class="viz viz-gauge">
+          <svg viewBox="0 0 110 70" fill="none" stroke-width="6" stroke-linecap="round">
+            <path d="M10 60 A45 45 0 0 1 100 60" stroke="var(--border)"/>
+            <path d="M10 60 A45 45 0 0 1 70 19" stroke="var(--c-wpo)" style="filter:drop-shadow(0 0 5px var(--c-wpo))"/>
+            <line class="needle" x1="55" y1="60" x2="55" y2="26" stroke="#fff" stroke-width="3"/>
+            <circle cx="55" cy="60" r="5" fill="#fff"/>
+          </svg>
+        </div>
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg>
+        </div>
+        <div>
+          <div class="ptag">WP-Optimize</div>
+          <h3>Speed up your WordPress&nbsp;website</h3>
+          <p>Cache, clean and compress in one plugin. Page caching, database clean-up, image compression and minification — for a faster, leaner site.</p>
+          <span class="go">Explore WP-Optimize →</span>
+        </div>
+      </article>
+
+      <!-- All-In-One Security -->
+      <article class="pcard span4 reveal" style="--accent:var(--c-aios)">
+        <div class="topglow"></div><div class="sheen"></div>
+        <div class="viz viz-shield">
+          <svg viewBox="0 0 96 110" fill="none">
+            <path d="M48 6 84 20v34c0 28-20 42-36 50-16-8-36-22-36-50V20L48 6Z" stroke="var(--border)" stroke-width="2"/>
+            <path class="ring" d="M48 18 72 28v26c0 20-14 30-24 36-10-6-24-16-24-36V28L48 18Z" stroke="var(--c-aios)" stroke-width="2" style="filter:drop-shadow(0 0 6px var(--c-aios))"/>
+            <path d="M38 56l8 8 14-16" stroke="var(--c-aios)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        </div>
+        <div>
+          <div class="ptag">All-In-One Security</div>
+          <h3>Secure your WordPress&nbsp;website</h3>
+          <p>Feature-rich, accessible protection against hacking and brute-force attacks.</p>
+          <span class="go">Explore AIOS →</span>
+        </div>
+      </article>
+
+      <!-- UpdraftCentral -->
+      <article class="pcard span4 reveal" style="--accent:var(--c-uc); --d:.08s">
+        <div class="topglow"></div><div class="sheen"></div>
+        <div class="viz viz-grid" id="ucgrid"></div>
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </div>
+        <div>
+          <div class="ptag">UpdraftCentral</div>
+          <h3>Manage multiple WordPress&nbsp;websites</h3>
+          <p>Control every site you run from one fast, browser-based dashboard.</p>
+          <span class="go">Explore UpdraftCentral →</span>
+        </div>
+      </article>
+
+      <!-- Burst Statistics -->
+      <article class="pcard span4 reveal" style="--accent:var(--c-burst); --d:.16s">
+        <div class="topglow"></div><div class="sheen"></div>
+        <div class="viz viz-bars">
+          <i style="--h:40%"></i><i style="--h:65%"></i><i style="--h:48%"></i><i style="--h:80%"></i><i style="--h:60%"></i><i style="--h:100%"></i>
+        </div>
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10m6 10V4m6 16v-7"/></svg>
+        </div>
+        <div>
+          <div class="ptag">Burst Statistics</div>
+          <h3>Privacy-friendly analytics</h3>
+          <p>Understand your visitors without compromising their privacy.</p>
+          <span class="go">Explore Burst →</span>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===================== STATS BAND ===================== -->
+<section class="stats-band">
+  <div class="wrap">
+    <div class="stats-grid">
+      <div class="bigstat reveal"><div class="n"><span class="accent" data-count="5" data-suffix="M+">0</span></div><div class="l">Active installs worldwide</div></div>
+      <div class="bigstat reveal" style="--d:.08s"><div class="n">5.0<span class="accent">★</span></div><div class="l">Average plugin rating</div></div>
+      <div class="bigstat reveal" style="--d:.16s"><div class="n"><span data-count="15">0</span></div><div class="l">Years building for WordPress</div></div>
+      <div class="bigstat reveal" style="--d:.24s"><div class="n"><span class="accent" data-count="5">0</span></div><div class="l">Plugins, one suite</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SUPPORT QUOTE ===================== -->
+<section class="quote" id="support">
+  <div class="qglow"></div>
+  <div class="wrap">
+    <blockquote class="reveal">Our support engineers are plugin developers — and even our <span class="hl">lead developers answer support tickets.</span></blockquote>
+    <div class="qmeta reveal" style="--d:.15s">TEAMUPDRAFT — SUPPORT, BY THE PEOPLE WHO BUILD IT</div>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="cta">
+  <div class="cta-box reveal">
+    <div class="ctaglow"></div>
+    <h2>Everything your WordPress site needs</h2>
+    <p>Take control with ease, speed and peace of mind. One suite, trusted on over five million sites.</p>
+    <div class="row">
+      <a class="btn btn-primary" href="#suite">Get the suite <span class="arr">→</span></a>
+      <a class="btn btn-ghost" href="#support">Talk to a developer →</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="foot">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="brand" href="#top">
+          <span class="mark"><svg viewBox="0 0 32 32" fill="none"><path d="M16 2 L28 26 L16 20 L4 26 Z" fill="url(#lg)"/></svg></span>
+          <span><b>Team</b>Updraft</span>
+        </a>
+        <p>Everything your WordPress site needs — backup, speed, security and control, in one suite.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Plugins</h4>
+        <a href="#suite">UpdraftPlus</a><a href="#suite">WP-Optimize</a><a href="#suite">All-In-One Security</a><a href="#suite">UpdraftCentral</a><a href="#suite">Burst Statistics</a>
+      </div>
+      <div class="foot-col">
+        <h4>Solutions</h4>
+        <a href="#">Back up</a><a href="#">Migrate</a><a href="#">Optimize</a><a href="#">Security</a><a href="#">Web analytics</a>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <a href="#">About</a><a href="#">Blog</a><a href="#">Careers</a><a href="#">Affiliates</a><a href="#">Terms</a><a href="#">Privacy</a>
+      </div>
+      <div class="foot-col">
+        <h4>Support</h4>
+        <a href="#support">Documentation</a><a href="#support">Premium support</a><a href="#support">Feature requests</a><a href="#support">Contact</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <p>©2026 TeamUpdraft, UK registered company number: 8570611, VAT number: 202 1260 80</p>
+      <div class="foot-social">
+        <a href="#" aria-label="X"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h3l-7 8 8 12h-6l-5-7-5 7H-0l8-9L0 2h6l4 6 5-6Z" transform="translate(1)"/></svg></a>
+        <a href="#" aria-label="GitHub"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.4-2.2-.2-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.6 5 .3.3.6.9.6 1.8v2.7c0 .3.2.6.7.5A10 10 0 0 0 12 2Z"/></svg></a>
+        <a href="#" aria-label="YouTube"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 4.9 12 4.9 12 4.9s-7 0-8.9.5A3 3 0 0 0 1 7.5 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.5 12 31 31 0 0 0 23 7.5ZM9.8 15.3V8.7l5.7 3.3-5.7 3.3Z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- nav scrolled state + progress bar ---------- */
+  var nav = document.getElementById("nav");
+  var progress = document.getElementById("progress");
+  function onScroll(){
+    var y = window.scrollY || window.pageYOffset;
+    nav.classList.toggle("scrolled", y > 24);
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? (y / h) * 100 : 0) + "%";
+  }
+  window.addEventListener("scroll", onScroll, {passive:true});
+  onScroll();
+
+  /* ---------- hero headline: split into animated words ---------- */
+  var headline = document.getElementById("headline");
+  (function splitWords(){
+    var walker = [];
+    headline.childNodes.forEach(function(node){ walker.push(node); });
+    var idx = 0;
+    walker.forEach(function(node){
+      if(node.nodeType === 3){ // text node -> wrap each word
+        var frag = document.createDocumentFragment();
+        node.textContent.split(/(\s+)/).forEach(function(part){
+          if(/^\s+$/.test(part)){ frag.appendChild(document.createTextNode(part)); return; }
+          if(part === "") return;
+          var w = document.createElement("span"); w.className="word";
+          var i = document.createElement("i"); i.textContent = part;
+          i.style.setProperty("--wd", (idx*0.06)+"s"); idx++;
+          w.appendChild(i); frag.appendChild(w);
+        });
+        headline.replaceChild(frag, node);
+      } else if(node.nodeType === 1){ // <em> gradient word
+        var t = node.textContent;
+        node.textContent = "";
+        var w2 = document.createElement("span"); w2.className="word";
+        var i2 = document.createElement("i"); i2.textContent = t;
+        i2.style.setProperty("--wd",(idx*0.06)+"s"); idx++;
+        w2.appendChild(i2); node.appendChild(w2);
+      }
+    });
+  })();
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){
+    document.querySelector(".hero").classList.add("lit");
+  });});
+
+  /* ---------- reveal on scroll ---------- */
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
+    });
+  }, {threshold:0.16, rootMargin:"0px 0px -8% 0px"});
+  document.querySelectorAll(".reveal, .pcard").forEach(function(el){ io.observe(el); });
+
+  /* ---------- count-up stats ---------- */
+  var counted = new WeakSet();
+  var cio = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting || counted.has(e.target)) return;
+      counted.add(e.target);
+      var el = e.target, target = parseFloat(el.getAttribute("data-count"));
+      var suffix = el.getAttribute("data-suffix") || "";
+      var dur = 1500, t0 = performance.now();
+      function tick(now){
+        var p = Math.min((now - t0)/dur, 1);
+        var eased = 1 - Math.pow(1-p, 3);
+        var val = target <= 5 ? (Math.round(eased*target*10)/10) : Math.round(eased*target);
+        if(target % 1 === 0) val = Math.round(eased*target);
+        el.textContent = val + suffix;
+        if(p < 1) requestAnimationFrame(tick); else el.textContent = target + suffix;
+      }
+      requestAnimationFrame(tick);
+    });
+  }, {threshold:0.6});
+  document.querySelectorAll("[data-count]").forEach(function(el){ cio.observe(el); });
+
+  /* ---------- hero spotlight + magnetic buttons ---------- */
+  var hero = document.querySelector(".hero"), spot = document.getElementById("spotlight");
+  if(!reduce){
+    hero.addEventListener("pointermove", function(e){
+      var r = hero.getBoundingClientRect();
+      spot.style.setProperty("--mx", (e.clientX - r.left)+"px");
+      spot.style.setProperty("--my", (e.clientY - r.top)+"px");
+      spot.style.opacity = 1;
+    });
+    hero.addEventListener("pointerleave", function(){ spot.style.opacity = 0; });
+
+    document.querySelectorAll(".btn-primary").forEach(function(btn){
+      btn.addEventListener("pointermove", function(e){
+        var r = btn.getBoundingClientRect();
+        btn.style.transform = "translate("+ ((e.clientX-r.left-r.width/2)*0.18) +"px,"+ ((e.clientY-r.top-r.height/2)*0.3 - 2) +"px)";
+      });
+      btn.addEventListener("pointerleave", function(){ btn.style.transform = ""; });
+    });
+
+    /* ---------- product card 3D tilt + sheen tracking ---------- */
+    document.querySelectorAll(".pcard").forEach(function(card){
+      card.addEventListener("pointermove", function(e){
+        var r = card.getBoundingClientRect();
+        var px = (e.clientX-r.left)/r.width, py = (e.clientY-r.top)/r.height;
+        card.style.transform = "perspective(900px) rotateY("+((px-0.5)*6)+"deg) rotateX("+((0.5-py)*6)+"deg) translateY(-4px)";
+        card.querySelector(".sheen").style.setProperty("--px",(px*100)+"%");
+        card.querySelector(".sheen").style.setProperty("--py",(py*100)+"%");
+      });
+      card.addEventListener("pointerleave", function(){ card.style.transform = ""; });
+    });
+  }
+
+  /* ---------- duplicate marquee track for seamless loop ---------- */
+  var track = document.getElementById("track");
+  track.innerHTML += track.innerHTML;
+
+  /* ---------- hide purely-decorative motion from screen readers ---------- */
+  document.querySelectorAll(".marquee, .viz, .seg-visual, .qglow, .ctaglow, .hero-glow")
+    .forEach(function(el){ el.setAttribute("aria-hidden","true"); });
+
+  /* ---------- segment decorations ---------- */
+  (function(){
+    var df = document.getElementById("dotfield");
+    if(df){ for(var i=0;i<26;i++){ var d=document.createElement("i");
+      d.style.left=(Math.random()*90+5)+"%"; d.style.top=(Math.random()*90+5)+"%";
+      d.style.animationDelay=(Math.random()*6)+"s"; d.style.opacity=(0.3+Math.random()*0.6);
+      d.style.transform="scale("+(0.5+Math.random())+")"; df.appendChild(d); } }
+    var ug = document.getElementById("ucgrid");
+    if(ug){ for(var j=0;j<12;j++){ var c=document.createElement("i");
+      if(Math.random()>0.45) c.className="on"; if(c.className==="on") c.style.animationDelay=(Math.random()*2.4)+"s";
+      ug.appendChild(c); } }
+  })();
+
+  /* ---------- "watch the story" -> friendly nudge in this prototype ---------- */
+  var play = document.getElementById("playStory");
+  function playStory(){ document.getElementById("segments").scrollIntoView({behavior:"smooth"}); }
+  if(play){
+    play.addEventListener("click", playStory);
+    play.addEventListener("keydown", function(e){
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); playStory(); }
+    });
+  }
+
+  /* ---------- mobile burger -> reveal links inline ---------- */
+  var burger = document.getElementById("burger");
+  if(burger) burger.addEventListener("click", function(){
+    var links = document.querySelector(".nav-links");
+    var shown = links.style.display === "flex";
+    burger.setAttribute("aria-expanded", shown ? "false" : "true");
+    links.style.cssText = shown ? "" :
+      "display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:rgba(8,7,12,.96);backdrop-filter:blur(18px);padding:18px;gap:4px;border-bottom:1px solid var(--border)";
+  });
+
+  /* ============================================================
+     HERO CANVAS — "the updraft": embers of light rising.
+     Each particle = a site lifted & protected. Warm at base,
+     cooling as it climbs. Looping, infinite, gentle.
+     ============================================================ */
+  if(!reduce){
+    var canvas = document.getElementById("updraft");
+    var ctx = canvas.getContext("2d");
+    var W,H,DPR, particles = [];
+    var COLORS = [[255,150,80],[255,106,61],[255,90,120],[200,110,255]];
+
+    function resize(){
+      DPR = Math.min(window.devicePixelRatio||1, 2);
+      W = canvas.clientWidth; H = canvas.clientHeight;
+      canvas.width = W*DPR; canvas.height = H*DPR;
+      ctx.setTransform(DPR,0,0,DPR,0,0);
+      var count = Math.round(Math.min(W, 1400) / 11);
+      particles = [];
+      for(var i=0;i<count;i++) particles.push(spawn(true));
+    }
+    function spawn(initial){
+      var col = COLORS[(Math.random()*COLORS.length)|0];
+      return {
+        x: Math.random()*W,
+        y: initial ? Math.random()*H : H + Math.random()*60,
+        r: 0.6 + Math.random()*2.2,
+        vy: 0.25 + Math.random()*0.9,           // rising speed
+        sway: 0.3 + Math.random()*0.9,
+        swayPhase: Math.random()*Math.PI*2,
+        swaySpeed: 0.005 + Math.random()*0.012,
+        life: 0, maxLife: 260 + Math.random()*340,
+        col: col,
+        glow: Math.random()*0.6 + 0.4
+      };
+    }
+    var running = true;
+    function frame(){
+      if(!running) return;
+      ctx.clearRect(0,0,W,H);
+      ctx.globalCompositeOperation = "lighter";
+      for(var i=0;i<particles.length;i++){
+        var p = particles[i];
+        p.life++; p.swayPhase += p.swaySpeed;
+        p.y -= p.vy;
+        p.x += Math.sin(p.swayPhase) * p.sway;
+        var lifeT = p.life / p.maxLife;
+        var alpha = Math.sin(Math.min(lifeT,1) * Math.PI) * p.glow; // fade in then out
+        if(p.y < -10 || p.life > p.maxLife){ particles[i] = spawn(false); continue; }
+        var c = p.col;
+        var grad = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);
+        grad.addColorStop(0, "rgba("+c[0]+","+c[1]+","+c[2]+","+(alpha*0.9)+")");
+        grad.addColorStop(1, "rgba("+c[0]+","+c[1]+","+c[2]+",0)");
+        ctx.fillStyle = grad;
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r*4,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle = "rgba("+c[0]+","+c[1]+","+c[2]+","+alpha+")";
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+      }
+      ctx.globalCompositeOperation = "source-over";
+      requestAnimationFrame(frame);
+    }
+    window.addEventListener("resize", resize);
+
+    /* pause the loop while the hero is off-screen — no point burning a rAF on it */
+    var hio = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting && !running){ running = true; requestAnimationFrame(frame); }
+        else if(!e.isIntersecting){ running = false; }
+      });
+    }, {threshold:0});
+    hio.observe(canvas);
+
+    resize(); frame();
+  }
+})();
+</script>
+</body>
+</html>
