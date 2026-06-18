@@ -194,13 +194,16 @@ h2.big{
 }
 .hero h1 .word{ display:inline-block; overflow:hidden; vertical-align:top; }
 .hero h1 .word i{ display:inline-block; font-style:normal; transform:translateY(110%); transition:transform 1s var(--ease); transition-delay:var(--wd,0s); }
-.hero.lit h1 .word i{ transform:translateY(0); }
+.hero.lit h1 .word i{ transform:none; } /* de-composite after reveal so clipped gradient text repaints reliably */
 .hero h1 em{ font-style:normal; }
-/* gradient must sit on the text-bearing node itself (the split-word <i>),
-   not an ancestor — background-clip:text won't clip to descendant glyphs */
-.hero h1 em i, .hero h1 em{
+/* Gradient lives on .grad, which is NEVER transformed. The slide-up reveal
+   transform sits on the parent <i>; keeping the clipped element off its own
+   composited layer stops the gradient text vanishing on font-swap/repaint. */
+.hero h1 em .grad{
+  display:inline-block;
   background:linear-gradient(120deg,#ffd9a0 0%, var(--warm) 40%, var(--pink) 70%, var(--violet) 100%);
-  -webkit-background-clip:text; background-clip:text; color:transparent;
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent; color:transparent;
 }
 .hero-sub{ color:var(--dim); font-size:clamp(16px,1.7vw,20px); max-width:54ch; line-height:1.65; margin-bottom:36px;
   opacity:0; transform:translateY(20px); transition:.9s var(--ease) .55s; }
@@ -788,8 +791,10 @@ footer{ border-top:1px solid var(--border); background:var(--bg-2); padding:clam
         var t = node.textContent;
         node.textContent = "";
         var w2 = document.createElement("span"); w2.className="word";
-        var i2 = document.createElement("i"); i2.textContent = t;
+        var i2 = document.createElement("i");                 // carries the slide transform
         i2.style.setProperty("--wd",(idx*0.06)+"s"); idx++;
+        var g2 = document.createElement("span"); g2.className="grad"; g2.textContent = t; // carries the gradient, never transformed
+        i2.appendChild(g2);
         w2.appendChild(i2); node.appendChild(w2);
       }
     });
